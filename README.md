@@ -1,4 +1,5 @@
 # Mouse vs Doubao
+**A personal learning project, not affiliated with any official product**
 ## 1. Project Overview
 
 `Mouse vs Doubao` is a desktop interactive mini-game written in **C++17** and rendered with **SFML 3.1.0**. It draws a character named "Doubao" inside an 800×600 window. The player indirectly controls the character by moving the mouse: Doubao automatically moves based on its distance to the cursor — it flees when the mouse gets close and approaches when the mouse moves away. Once the cursor gets too close, Doubao's health points (HP) keep dropping until they reach zero, at which point it "dies" and stops moving.
