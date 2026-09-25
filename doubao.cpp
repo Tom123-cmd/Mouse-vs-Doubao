@@ -5,8 +5,8 @@
 constexpr double kPi = 3.14159265358979323846;
 
 Doubao::Doubao(sf::RenderWindow& window)
-    : texture("doubao.png")   // SFML 3 支持从文件构造 Texture 
-    , texture_death("doubao_death.png")
+    : texture("res/doubao.png")   // SFML 3 支持从文件构造 Texture 
+    , texture_death("res/doubao_death.png")
     , sprite(texture)         // 关键：Sprite 必须用 Texture 构造
 {
     sprite.setScale({0.25f, 0.25f});

@@ -36,7 +36,7 @@ void restoreIME(sf::Window& window) {
 int main()
 {
     sf::Font font;
-    if (!font.openFromFile("Inter-var-2.ttf"))
+    if (!font.openFromFile("res/Inter-var-2.ttf"))
     {
         std::cout << "Failed to load font" << std::endl;
         return -1;
