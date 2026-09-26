@@ -1,6 +1,8 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "mouse.h"
+#include "math_utils.h"
 
 class Cannonball {
     protected:
@@ -11,6 +13,6 @@ class Cannonball {
     public:
         Cannonball(sf::RenderWindow& window, const sf::Texture& texture, sf::Vector2f pos, double angle);
         void draw(sf::RenderWindow& window);
-        void move();
+        void move(sf::RenderWindow& window, Mouse& mouse);
         bool used();
 };

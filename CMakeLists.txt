@@ -14,6 +14,11 @@ add_executable(MouseVsDoubao
     doubao.h
     doubao.cpp
     cannonball.h
-    cannonball.cpp)
+    cannonball.cpp
+    mouse.h
+    mouse.cpp
+    math_utils.h
+    math_utils.cpp
+)
 target_link_libraries(MouseVsDoubao PRIVATE SFML::Graphics SFML::Audio)
 add_compile_options(/utf-8)

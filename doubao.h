@@ -3,6 +3,8 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "cannonball.h"
+#include "mouse.h"
+#include "math_utils.h"
 
 class Doubao {
     protected:
@@ -20,6 +22,6 @@ class Doubao {
     public:
         Doubao(sf::RenderWindow& window);
         void draw(sf::RenderWindow& window);
-        void move(sf::RenderWindow& window);
+        void move(sf::RenderWindow& window, Mouse& mouse);
         int getHP();
 };

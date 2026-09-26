@@ -3,6 +3,7 @@
 #include <optional>
 
 #include "doubao.h"
+#include "mouse.h"
 
 #include <iostream>
 
@@ -46,6 +47,8 @@ int main()
     window.setFramerateLimit(120);
     sf::Text doubaoHP(font);
     doubaoHP.setPosition({10, 10});
+    sf::Text mouseHP(font);
+    mouseHP.setPosition({10, 40});
     sf::Text tips(font);
     tips.setPosition({10, 600 - 40});
     tips.setString("Move the mouse to control Doubao.\nWhen Doubao's HP reaches 0, it will stop moving.");
@@ -58,10 +61,22 @@ int main()
         disableIME(window);
     }
 
+    Mouse mouse;
     Doubao doubao(window);
+
+    bool gameOver = false;
 
     while (window.isOpen())
     {
+        if ((doubao.getHP() <= 0 || mouse.getHP() <= 0) && !gameOver) {
+            gameOver = true;
+            if (doubao.getHP() <= 0) {
+                tips.setString("Game Over! Doubao has been defeated.\nPress ESC to exit.");
+            } else {
+                tips.setString("Game Over! Mouse has been defeated.\nPress ESC to exit.");
+            }
+        }
+
         while (const std::optional event = window.pollEvent())
         {
             if (event->is<sf::Event::Closed>()) {
@@ -77,12 +92,20 @@ int main()
             }
         }
 
-        doubao.move(window);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
+            window.close();
+        }
+
+        // if (!gameOver) {
+        doubao.move(window, mouse);
         doubaoHP.setString("Doubao HP: " + std::to_string(doubao.getHP()));
+        mouseHP.setString("Mouse HP: " + std::to_string(mouse.getHP()));
+        // }
 
         window.clear(sf::Color(0, 0, 0));
         doubao.draw(window);
         window.draw(doubaoHP);
+        window.draw(mouseHP);
         window.draw(tips);
         window.display();
     }
