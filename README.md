@@ -1,83 +1,130 @@
 # Mouse vs Doubao
-**A personal learning project, not affiliated with any official product**
-## 1. Project Overview
 
-`Mouse vs Doubao` is a desktop interactive mini-game written in **C++17** and rendered with **SFML 3.1.0**. It draws a character named "Doubao" inside an 800×600 window. The player indirectly controls the character by moving the mouse: Doubao automatically moves based on its distance to the cursor — it flees when the mouse gets close and approaches when the mouse moves away. Once the cursor gets too close, Doubao's health points (HP) keep dropping until they reach zero, at which point it "dies" and stops moving.
+**Personal learning project, not related to any official product**
 
-The project (build target `MouseVsDoubao`) serves as a practical exercise in modern C++ and the new SFML 3 API.
+A small, playful desktop game prototype built with C++ and SFML, where the player uses the mouse to interact with a character named Doubao in a simple survival-style loop.
 
-## 2. Features
+This project is designed as a learning-focused, lightweight game experiment and is not affiliated with any official product or brand.
 
-- Mouse-driven indirect movement with smart "flee / approach" logic
-- Health system: HP starts at 100; touching the cursor drains HP per frame; at 0 HP, switches to the death texture and stops moving
-- Real-time HUD: current HP shown top-left, operation tips at the bottom
-- Boundary constraint: the character's position is clamped within the window
-- Windows-specific optimization: auto-disables / restores the Input Method Editor (IME) on window focus gain/loss to prevent the Chinese IME popup from interfering
-- Uses a locally bundled SFML 3.1.0 — no online download from GitHub required
+## Overview
 
-## 3. Game Mechanics
+`Mouse vs Doubao` is a mini-game built in C++17 using the SFML 3.1.0 framework. The character reacts to the cursor in real time: when the mouse is close, Doubao flees; when the mouse is farther away, it approaches. If the cursor gets too near, Doubao starts losing HP. Meanwhile, Doubao fights back by firing cannonballs toward the cursor. The match ends when either side reaches zero HP.
 
-| Mechanic | Description |
-| --- | --- |
-| Movement rule | Computes distance `dis` and angle to the mouse; displacement `moveDis = (200 - dis) × 0.05 × (-1)`. When `dis < 200` it moves away from the cursor; when `dis > 200` it moves toward the cursor |
-| Rotation | Doubao always rotates to face the cursor (angle via `atan2`, with coordinate-axis special cases) |
-| Damage | When the distance to the cursor is under 45, HP decreases by 1 per frame |
-| Death state | At HP ≤ 0, switches to the death texture and stops moving |
-| Boundary | Positions are clamped within the window's min/max bounds |
+The project combines simple game logic, real-time motion, collision handling, and a tiny HUD into a compact, runnable prototype.
 
-## 4. Technical Architecture
+## Key Features
 
-- **Language standard**: C++17 (`CMAKE_CXX_STANDARD 17`)
-- **Build system**: CMake ≥ 3.20, generates a Visual Studio project (`MouseVsDoubao.slnx` / `.vcxproj`)
-- **Rendering library**: SFML 3.1.0 (`Graphics`, `Audio` modules), provided locally under `thirdparty/`
-- **Compiler option**: `/utf-8` to keep source strings correct
-- **Platform adaptation**: `main.cpp` uses the `SFML_SYSTEM_WINDOWS` macro for Windows IME disable/restore (`ImmAssociateContext`)
+- Mouse-driven interaction system
+- Dynamic movement based on cursor distance and angle
+- HP-based combat and game-over conditions
+- Projectile shooting mechanic from Doubao toward the mouse
+- Window-bound movement and collision constraints
+- HUD with HP display and gameplay tips
+- Windows-specific IME handling for a smoother input experience
+- Offline local SFML dependency bundled in the repository
 
-**Core class: `Doubao`** (`doubao.h` / `doubao.cpp`)
+## Gameplay Loop
 
-- Encapsulates textures (normal & death), sprite, movement bounds and HP
-- `move()`: computes distance and angle from the mouse, updates displacement, rotation and HP
-- `inToWindow()`: clamps the position within the window bounds
-- `draw()`: renders the sprite
+- The mouse cursor acts as the opponent or external force.
+- Doubao continuously evaluates its position relative to the cursor.
+- At close range, it moves away.
+- At longer range, it moves toward the cursor.
+- If the cursor stays too near, Doubao loses health over time.
+- Doubao periodically launches cannonballs to damage the mouse.
+- The game ends when either Doubao or the mouse reaches 0 HP.
+- Press `Esc` to exit.
 
-## 5. Project Structure
+## Project Structure
 
-```
+```text
 Mouse vs Doubao/
-├── CMakeLists.txt          # Build config (C++17 / SFML 3)
-├── main.cpp                # Entry point, main loop, HUD, IME handling
-├── doubao.h                # Doubao class declaration
-├── doubao.cpp              # Doubao implementation (movement, HP, textures)
-├── res/                    # Runtime assets: doubao.png, doubao_death.png, Inter-var-2.ttf
-├── thirdparty/SFML-3.1.0   # Bundled SFML 3.1.0 dependency
-├── build/                  # Build output (Debug / Release exe)
-├── .vscode/                # Editor configuration
-└── .gitignore              # Ignores .vscode/, build/, output/
+├── CMakeLists.txt              # Build configuration for C++17 and SFML
+├── main.cpp                    # Main loop, window setup, HUD, and input handling
+├── doubao.h / doubao.cpp       # Doubao character logic and behavior
+├── mouse.h / mouse.cpp         # Mouse state and HP tracking
+├── cannonball.h / cannonball.cpp # Projectile logic
+├── math_utils.h / math_utils.cpp # Distance and angle helper functions
+├── res/                        # Game assets (textures and font)
+├── thirdparty/
+│   └── SFML-3.1.0/            # Bundled SFML 3.1.0 library
+├── build/                      # Generated build output
+├── output/                     # Reserved output folder
+├── .gitignore                  # Ignored generated/editor files
+├── README.md                   # Project documentation
+├── .vscode/                    # Editor configuration
+└── .gitignore
 ```
 
-## 6. Build & Run
+## Technical Highlights
 
-1. Configure the project with CMake, pointing at the bundled `thirdparty/SFML-3.1.0` (pre-set via `CMAKE_PREFIX_PATH` in `CMakeLists.txt`)
-2. Generate and build the Visual Studio project to obtain `MouseVsDoubao.exe` (`build/Debug` or `build/Release`)
-3. Runtime assets are loaded from the `res/` folder (`doubao.png`, `doubao_death.png`, `Inter-var-2.ttf`), which is tracked in Git and present right after cloning
-4. Launch and move the mouse to interact with Doubao
+- Built in **C++17**
+- Uses **SFML 3.1.0** for rendering and input
+- Uses **CMake** for project configuration and build generation
+- Includes local asset support under the `res/` folder
+- Contains Windows-only IME disable/restore logic for smoother keyboard behavior during focus changes
 
-> Note: build outputs live under `build/`, which is ignored by `.gitignore` and therefore not tracked in Git. Runtime assets live under `res/` and are tracked in Git.
+## Main Components
 
-## 7. Development Status & Roadmap
+- `Doubao`
+  - Controls sprite rendering, health, death state, and movement behavior
+  - Manages projectile spawning and window boundary checks
+- `Mouse`
+  - Tracks cursor-related HP and pointer state
+- `Cannonball`
+  - Represents projectiles fired by Doubao
+  - Moves toward the mouse and reduces HP on contact
+- `math_utils`
+  - Provides geometric calculations for distance and angle used by the game logic
 
-**Git commits:**
+## Build and Run
 
-- `81e1975` init — project initialized
-- `8d3a789` fix path format in .gitignore
-- `22d5dc1` implement movement and HP — added character movement logic and the health system
-- `74f9bfe` rename project to `MouseVsDoubao`, update build target, add project introduction
-- `8603697` add disclaimer to README (personal learning project, not affiliated with any official product)
-- `91ae380` move runtime assets into a dedicated `res/` folder
+### Requirements
 
-**Possible extensions:**
+- CMake 3.20 or newer
+- A compatible C++ compiler
+- SFML 3.1.0, already bundled in `thirdparty/SFML-3.1.0`
 
-- Add game audio (the project already links SFML's `Audio` module)
-- Add score, levels or a timer to enrich gameplay
-- Parameterize the movement rule (distance threshold, speed factor) for tuning
-- Define the purpose of the `output/` directory
+### Build Steps
+
+1. Configure the project with CMake.
+2. Build the target `MouseVsDoubao`.
+3. Run the generated executable from the build output folder.
+
+Typical Windows output paths:
+
+```text
+build/Debug/MouseVsDoubao.exe
+build/Release/MouseVsDoubao.exe
+```
+
+### Runtime Assets
+
+The project loads required assets from the `res/` directory, including:
+
+- `doubao.png`
+- `doubao_death.png`
+- `cannonball.png`
+- `Inter-var-2.ttf`
+
+## Why This Project
+
+This repository is a compact example of how a small game can be built from scratch using modern C++ and a lightweight graphics framework. It focuses on:
+
+- game loop design
+- character movement logic
+- health and combat systems
+- geometric calculations for entity behavior
+- simple object-oriented code organization
+
+It is intentionally lightweight and approachable, making it suitable as a personal learning project or a base for further expansion.
+
+## Notes
+
+- This project is intended for experimentation and learning.
+- Generated files under `build/` are typically not tracked by Git.
+- Asset files in `res/` are part of the runtime content and are kept alongside the project source.
+- The project is still evolving and can serve as a starting point for richer gameplay features in the future.
+
+## License and Status
+
+This project is a personal learning prototype and does not currently declare a formal open-source license. It is shared as a code sample and creative experiment rather than a production-grade game product.
