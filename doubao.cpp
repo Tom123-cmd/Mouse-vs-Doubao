@@ -7,6 +7,7 @@ constexpr double kPi = 3.14159265358979323846;
 Doubao::Doubao(sf::RenderWindow& window)
     : texture("res/doubao.png")   // SFML 3 支持从文件构造 Texture 
     , texture_death("res/doubao_death.png")
+    , texture_cannonball("res/cannonball.png")
     , sprite(texture)         // 关键：Sprite 必须用 Texture 构造
 {
     sprite.setScale({0.25f, 0.25f});
@@ -22,6 +23,11 @@ Doubao::Doubao(sf::RenderWindow& window)
 }
 
 void Doubao::draw(sf::RenderWindow& window) {
+    for (auto& cannonball : cannonballs) {
+        if (cannonball.used()) {
+            cannonball.draw(window);
+        }
+    }
     window.draw(sprite);
 }
 
@@ -82,6 +88,27 @@ void Doubao::move(sf::RenderWindow& window) {
 
     if (dis < 45) {
         HP--;
+    }
+
+    if(clock.getElapsedTime() - lastCannonballTime >= cannonballInterval) {
+        cannonballs.emplace_back(window, texture_cannonball, sprite.getPosition(), angle);
+        lastCannonballTime = clock.getElapsedTime();
+    }
+
+    for (int i = 0; i < cannonballs.size(); ++i) {
+        if (i < 0 || i >= cannonballs.size()) {
+            continue; // 确保索引在有效范围内
+        }
+        if (!cannonballs[i].used()) {
+            cannonballs.erase(cannonballs.begin() + i);
+            --i; // 调整索引以避免跳过下一个元素
+        }
+    }
+
+    for (auto& cannonball : cannonballs) {
+        if (cannonball.used()) {
+            cannonball.move();
+        }
     }
 }
 

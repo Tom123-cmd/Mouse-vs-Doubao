@@ -12,6 +12,8 @@ find_package(SFML 3 REQUIRED COMPONENTS Graphics Audio)
 add_executable(MouseVsDoubao
     main.cpp
     doubao.h
-    doubao.cpp)
+    doubao.cpp
+    cannonball.h
+    cannonball.cpp)
 target_link_libraries(MouseVsDoubao PRIVATE SFML::Graphics SFML::Audio)
 add_compile_options(/utf-8)
